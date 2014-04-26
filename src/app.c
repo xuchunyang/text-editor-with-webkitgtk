@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include <webkit/webkit.h>
+
 static void
 activate_toggle (GSimpleAction *action,
                  GVariant      *parameter,
@@ -129,6 +131,7 @@ new_window (GApplication *app,
   GtkWidget *toolbar;
   GtkToolItem *button;
   GtkWidget *sw, *box, *label;
+  gchar *html;
 
   window = gtk_application_window_new (GTK_APPLICATION (app));
   gtk_window_set_default_size ((GtkWindow*)window, 640, 480);
@@ -182,17 +185,27 @@ new_window (GApplication *app,
 
   gtk_grid_attach (GTK_GRID (grid), toolbar, 0, 0, 1, 1);
 
+  // TODO: change to Webkit
   scrolled = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_set_hexpand (scrolled, TRUE);
   gtk_widget_set_vexpand (scrolled, TRUE);
-  view = gtk_text_view_new ();
+
+  view = webkit_web_view_new();
+
+  html = "<html><body><p> <font color= 'red'> Hello, world! </font> </p></body></html>";
+  webkit_web_view_load_string (view, 
+                             html,
+                             "application/xhtml+xml",
+                             NULL,
+                             NULL
+                             );
 
   g_object_set_data ((GObject*)window, "bloatpad-text", view);
 
   gtk_container_add (GTK_CONTAINER (scrolled), view);
 
   gtk_grid_attach (GTK_GRID (grid), scrolled, 0, 1, 1, 1);
-
+/*
   if (file != NULL)
     {
       gchar *contents;
@@ -207,6 +220,7 @@ new_window (GApplication *app,
           g_free (contents);
         }
     }
+*/
 
   gtk_widget_show_all (GTK_WIDGET (window));
 }
