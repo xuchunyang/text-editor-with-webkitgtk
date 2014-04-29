@@ -1,11 +1,18 @@
 ## About
 A simple rich text editor using Gtk+/WebKit
 
+## Build && Run
+```shell
+$ cd src/
+$ gcc main.c `pkg-config --cflags --libs gtk+-3.0 webkitgtk-3.0`
+$ ./a.out test.html
+```
+
 ## TODO 
-- [ ] Use GtkApplication class
-- [ ] Create window UI (menubar, toolbar and gmenu) with XML and GtkBuilder
-- [ ] Renderer html using WebKit1 API
-- [ ] Set html editable and change text style with js (Rich text editor)
+- [x] Use GtkApplication class
+- [x] Create window UI (menubar, toolbar and gmenu) with XML and GtkBuilder
+- [x] Renderer html using WebKit1 API
+- [x] Set html editable and change text style with js (Rich text editor)
 - [ ] Port to WebKit2 API
 - [ ] Use CSS to customize background
 
