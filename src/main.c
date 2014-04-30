@@ -7,30 +7,6 @@
 #include <glib/gi18n.h>
 
 static void
-entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
-{
-  WebKitDOMDocument *document;
-  WebKitDOMElement *body, *div;
-
-  document = webkit_web_view_get_dom_document (view);
-  body = webkit_dom_document_query_selector (document,
-                                             "body",
-                                             NULL);
-  div = webkit_dom_document_create_element (document,
-                                            "div",
-                                            NULL);
-  webkit_dom_node_set_text_content (WEBKIT_DOM_NODE (div),
-                                    gtk_entry_get_text (entry),
-                                    NULL);
-  webkit_dom_node_append_child (WEBKIT_DOM_NODE (body),
-                                WEBKIT_DOM_NODE (div),
-                                NULL);
-  gtk_entry_set_text (entry, "");
-}
-
-
-
-static void
 about_cb (GSimpleAction *about_action, 
           GVariant *parameter,
           gpointer userdata)
