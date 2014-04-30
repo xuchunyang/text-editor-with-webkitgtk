@@ -4,10 +4,21 @@
     <submenu>
       <attribute name="label">File</attribute>
       <section>
+        <!-- 如何添快捷键 -->
         <item>
           <attribute name="label">New</attribute>
           <attribute name="action">app.new</attribute>
         </item>
+        <item>
+          <attribute name="label">Open</attribute>
+          <attribute name="action">app.open</attribute>
+        </item>
+        <item>
+          <attribute name="label">Save</attribute>
+          <attribute name="action">app.save</attribute>
+        </item>
+      </section>
+      <section>
         <item>
           <attribute name="label">Quit</attribute>
           <attribute name="action">app.quit</attribute>
@@ -17,6 +28,20 @@
     <submenu>
       <attribute name="label">Edit</attribute>
       <section>
+        <item>
+          <attribute name="label">Undo</attribute>
+          <attribute name="action">win.undo</attribute>
+        </item>
+        <item>
+          <attribute name="label">Redo</attribute>
+          <attribute name="action">win.redo</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label">Cut</attribute>
+          <attribute name="action">win.cut</attribute>
+        </item>
         <item>
           <attribute name="label">Copy</attribute>
           <attribute name="action">win.copy</attribute>
@@ -28,81 +53,82 @@
       </section>
     </submenu>
     <submenu>
-      <attribute name="label">Choices</attribute>
-      <submenu>
-        <attribute name="label">Shapes</attribute>
-          <section>
-            <item>
-              <attribute name="label">Line</attribute>
-              <attribute name="action">win.shape</attribute>
-              <attribute name="target">line</attribute>
-            </item>
-            <item>
-              <attribute name="label">Triangle</attribute>
-              <attribute name="action">win.shape</attribute>
-              <attribute name="target">triangle</attribute>
-            </item>
-            <item>
-              <attribute name="label">Square</attribute>
-              <attribute name="action">win.shape</attribute>
-              <attribute name="target">square</attribute>
-            </item>
-            <item>
-              <attribute name="label">Polygon</attribute>
-              <attribute name="action">win.shape</attribute>
-              <attribute name="target">polygon</attribute>
-            </item>
-            <item>
-              <attribute name="label">Circle</attribute>
-              <attribute name="action">win.shape</attribute>
-              <attribute name="target">circle</attribute>
-            </item>
-          </section>
-      </submenu>
+      <attribute name="label">Insert</attribute>
       <section>
         <item>
-          <attribute name="label">On</attribute>
-          <attribute name="action">app.state</attribute>
-          <attribute name="target">on</attribute>
-        </item>
-        <item>
-          <attribute name="label">Off</attribute>
-          <attribute name="action">app.state</attribute>
-          <attribute name="target">off</attribute>
-        </item>
-      </section>
-      <section>
-        <item>
-          <attribute name="label">Awesome</attribute>
-          <attribute name="action">app.awesome</attribute>
+          <attribute name="label">Insert image</attribute>
+          <attribute name="action">win.insertImage</attribute>
         </item>
       </section>
     </submenu>
-    <submenu>
-      <attribute name="label">Help</attribute>
+      <!-- Format menu item -->
+      <submenu>
+        <attribute name="label">Format</attribute>
+        <section>
+          <item>
+            <attribute name="label">Bold</attribute>
+            <attribute name="action">win.bold</attribute>
+          </item>
+          <item>
+            <attribute name="label">Italic</attribute>
+            <attribute name="action">win.italic</attribute>
+          </item>
+          <item>
+            <attribute name="label">Underline</attribute>
+            <attribute name="action">win.underline</attribute>
+          </item>
+          <item>
+            <attribute name="label">Strikethrough</attribute>
+            <attribute name="action">win.strikethrough</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="label">Font</attribute>
+            <attribute name="action">win.font</attribute>
+          </item>
+          <item>
+            <attribute name="label">Color</attribute>
+            <attribute name="action">win.color</attribute>
+          </item>
+        </section>
+
+      </submenu>
+      <submenu>
+        <attribute name="label">Help</attribute>
+        <section>
+          <item>
+            <attribute name="label">About</attribute>
+            <attribute name="action">win.about</attribute>
+          </item>
+        </section>
+      </submenu>
+    </menu>
+
+    <menu id="appmenu">
       <section>
+        <item>
+          <attribute name="label">New</attribute>
+          <attribute name="action">app.new</attribute>
+        </item>
+        <item>
+          <attribute name="label">Perferences</attribute>
+          <attribute name="action">app.perferences</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+      	  <attribute name="label">Help</attribute>
+      	  <attribute name="action">app.help</attribute>
+        </item>
         <item>
           <attribute name="label">About</attribute>
           <attribute name="action">win.about</attribute>
         </item>
-      </section>
-    </submenu>
-  </menu>
-
-  <menu id="appmenu">
-    <section>
         <item>
-            <attribute name="label">Test</attribute>
-            <attribute name="action">app.test</attribute>
+          <attribute name="label">Quit</attribute>
+          <attribute name="action">app.quit</attribute>
         </item>
-      <item>
-        <attribute name="label">New</attribute>
-        <attribute name="action">app.new</attribute>
-      </item>
-      <item>
-        <attribute name="label">Quit</attribute>
-        <attribute name="action">app.quit</attribute>
-      </item>
-    </section>
-  </menu>
-</interface>
+      </section>
+    </menu>
+  </interface>
