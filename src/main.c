@@ -28,39 +28,7 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
   gtk_entry_set_text (entry, "");
 }
 
-// Insert Picture
-static void
-insert_pic_clicked_cb (GtkButton *button, WebKitWebView *view)
-{
-  // Create a dialog to choose file
-  GtkWidget *dialog, *toplevel;
 
-  toplevel = gtk_widget_get_toplevel (button);
-  if (gtk_widget_is_toplevel (toplevel))
-  {
-    dialog = gtk_file_chooser_dialog_new ("Open a image",
-                                          toplevel,
-                                          GTK_FILE_CHOOSER_ACTION_OPEN,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("_Open"), GTK_RESPONSE_ACCEPT,
-                                          NULL);
-  }
-  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    char *filename, *command;
-
-    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-    command = g_strconcat ("document.execCommand('insertImage', null, '",
-                           filename,
-                           "');"
-                           );
-    g_debug (command);
-    webkit_web_view_execute_script (view, command);
-    gdk_window_destroy (dialog);
-    g_free (filename);
-    g_free (command);
-  }
-}
 
 static void
 about_cb (GSimpleAction *about_action, 
@@ -151,7 +119,31 @@ window_insertImage (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  g_print ("window_insertImage\n");
+  GtkWidget *parent_window, *dialog;
+  WebKitWebView *view;
+
+  parent_window = GTK_WIDGET (user_data);
+  view = g_object_get_data ((GObject*)parent_window, "webkit-view");
+  dialog = gtk_file_chooser_dialog_new ("Open a image",
+                                        parent_window,
+                                        GTK_FILE_CHOOSER_ACTION_OPEN,
+                                        _("_Cancel"), GTK_RESPONSE_CANCEL,
+                                        _("_Open"), GTK_RESPONSE_ACCEPT,
+                                        NULL);
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename, *command;
+
+    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+    command = g_strdup_printf ("document.execCommand('insertImage', null, '%s');",
+                               filename);
+    // FIXME: execute js here, not work
+    webkit_web_view_execute_script (view, command);
+    g_free (filename);
+    g_free (command);
+  }
+
+  gtk_widget_destroy (dialog);
 }
 
 static void
