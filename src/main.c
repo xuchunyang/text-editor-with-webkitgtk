@@ -178,6 +178,31 @@ window_color (GSimpleAction *action,
   g_print ("window_color\n");
 }
 
+static void
+activate_toggle (GSimpleAction *action,
+                 GVariant      *parameter,
+                 gpointer       user_data)
+{
+  GVariant *state;
+
+  state = g_action_get_state (G_ACTION (action));
+  g_action_change_state (G_ACTION (action), g_variant_new_boolean (!g_variant_get_boolean (state)));
+  g_variant_unref (state);
+}
+
+static void
+change_fullscreen_state (GSimpleAction *action,
+                         GVariant      *state,
+                         gpointer       user_data)
+{
+  if (g_variant_get_boolean (state))
+    gtk_window_fullscreen (user_data);
+  else
+    gtk_window_unfullscreen (user_data);
+
+  g_simple_action_set_state (action, state);
+}
+
 static GActionEntry win_entries[] = {
   { "redo", window_redo, NULL, NULL, NULL },
   { "undo", window_undo, NULL, NULL, NULL },
@@ -191,7 +216,7 @@ static GActionEntry win_entries[] = {
   { "strikethrough", window_strikethrough, NULL, NULL, NULL },
   { "font", window_font, NULL, NULL, NULL },
   { "color", window_color, NULL, NULL, NULL },
-  // { "fullscreen", activate_toggle, NULL, "false", change_fullscreen_state }
+  { "toggleFullscreen", activate_toggle, NULL, "false", change_fullscreen_state }
 };
 
 static GActionEntry app_entries[] = {
@@ -218,8 +243,8 @@ new_window (GApplication *app,
   gtk_window_set_default_size (GTK_WINDOW (window), 640, 480);
   gtk_window_set_position (window, GTK_WIN_POS_CENTER);
   gtk_window_set_title (GTK_WINDOW (window), "Faker");
-  g_signal_connect (window, "delete-event",
-                    G_CALLBACK (gtk_main_quit), NULL);
+  g_signal_connect_swapped (window, "delete-event",
+                            G_CALLBACK (g_application_quit), app);
 
   g_action_map_add_action_entries (G_ACTION_MAP (window), win_entries,
                                    G_N_ELEMENTS (win_entries), window);
