@@ -7,266 +7,74 @@
 #include <glib/gi18n.h>
 
 static void
-about_cb (GSimpleAction *about_action, 
-          GVariant *parameter,
-          gpointer userdata)
-{
-  const gchar *authors[] = {"Chunyang Xu", NULL};
-  gtk_show_about_dialog (NULL,
-                         "program-name", "Faker",
-                         "title", "About Faker",
-                         "logo-icon-name", "applications-office",
-                         "comments", "A Sample Rich Text Editor.",
-                         "website", "http://github.com/xuchunyang",
-                         "website-label", "Host on Github",
-                         "authors", authors,
-                         "copyright", "Copyright \xc2\xa9 2014 Chunyang Xu",
-                         NULL);
-}
-
-static void
-fullscreen_cb (GSimpleAction *fullscreen_action,
-               GVariant *parameter,
-               gpointer userdata)
-{
-  GtkWidget *window = userdata;
-  gtk_window_fullscreen (GTK_WINDOW (window));
-}
-
-static void
-copy_callback (GSimpleAction *fullscreen_action,
-               GVariant *parameter,
-               gpointer userdata)
-{
-  g_print ("copy active\n");
-}
-
-static void
-paste_callback (GSimpleAction *fullscreen_action,
-               GVariant *parameter,
-               gpointer userdata)
-{
-  //   webkit_web_view_paste_clipboard (view);
-  g_print ("paste active\n");
-}
-
-static void
-window_cut (GSimpleAction *action,
+insertImage_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  g_print ("window_cut\n");
+  // TODO: Port to Webkit2
+  g_print ("insertImage_cb\n");
 }
 
 static void
-window_copy (GSimpleAction *action,
+bold_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  g_print ("window_copy\n");
-}
-
-static void
-window_paste (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  g_print ("window_paste\n");
-}
-
-static void
-window_undo (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  g_print ("window_undo\n");
-}
-
-static void
-window_redo (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  g_print ("window_redo\n");
-}
-
-static void
-window_insertImage (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  GtkWidget *parent_window, *dialog;
-  WebKitWebView *view;
-
-  parent_window = GTK_WIDGET (user_data);
-  view = g_object_get_data ((GObject*)parent_window, "webkit-view");
-  dialog = gtk_file_chooser_dialog_new ("Open a image",
-                                        parent_window,
-                                        GTK_FILE_CHOOSER_ACTION_OPEN,
-                                        _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                        _("_Open"), GTK_RESPONSE_ACCEPT,
-                                        NULL);
-  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    char *filename, *command;
-
-    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-    command = g_strdup_printf ("document.execCommand('insertImage', null, '%s');",
-                               filename);
-    // FIXME: execute js here, not work && Port
-    // webkit_web_view_execute_script (view, command);
-    g_free (filename);
-    g_free (command);
-  }
-
-  gtk_widget_destroy (dialog);
-}
-
-static void
-window_bold (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  g_print ("bold\n");
+  g_print ("bold_cb\n");
   /*
   GtkWindow *window = user_data;
-  // FIXME: Port, the same blow
+  // TODO: Port to Webkit2
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_execute_script (view,"document.execCommand(\"bold\", false, false)");
   */
 }
 
 static void
-window_italic (GSimpleAction *action,
+underline_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-    g_print ("italic\n");
+     g_print ("underline_cb\n");
   /*
-  GtkWindow *window = user_data;
-  WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  webkit_web_view_execute_script (view, "document.execCommand(\"italic\", false, false)");
-  */
-}
-
-static void
-window_underline (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-     g_print ("italic\n");
-  /*
+  // TODO: Port to Webkit2
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_execute_script (view, "document.execCommand(\"underline\", false, false)");
   */
 }
 
+
 static void
-window_strikethrough (GSimpleAction *action,
+font_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  g_print ("strikethrough\n");
-  /*
-  GtkWindow *window = user_data;
-  WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  webkit_web_view_execute_script (view, "document.execCommand(\"strikethrough\", false, false)");
-  */
+  // TODO: Port to Webkit2
+  g_print ("font_cb\n");
 }
 
 static void
-window_font (GSimpleAction *action,
+color_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  g_print ("window_font\n");
-}
-
-static void
-window_color (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  g_print ("window_color\n");
-}
-
-static void
-activate_toggle (GSimpleAction *action,
-                 GVariant      *parameter,
-                 gpointer       user_data)
-{
-  GVariant *state;
-
-  state = g_action_get_state (G_ACTION (action));
-  g_action_change_state (G_ACTION (action), g_variant_new_boolean (!g_variant_get_boolean (state)));
-  g_variant_unref (state);
-}
-
-static void
-change_fullscreen_state (GSimpleAction *action,
-                         GVariant      *state,
-                         gpointer       user_data)
-{
-  if (g_variant_get_boolean (state))
-    gtk_window_fullscreen (user_data);
-  else
-    gtk_window_unfullscreen (user_data);
-
-  g_simple_action_set_state (action, state);
+  // TODO: Port to Webkit2
+  g_print ("olor_cb\n");
 }
 
 static GActionEntry win_entries[] = {
-  { "redo", window_redo, NULL, NULL, NULL },
-  { "undo", window_undo, NULL, NULL, NULL },
-  { "cut", window_cut, NULL, NULL, NULL },
-  { "copy", window_copy, NULL, NULL, NULL },
-  { "paste", window_paste, NULL, NULL, NULL },
-  { "insertImage", window_insertImage, NULL, NULL, NULL },
-  { "bold", window_bold, NULL, NULL, NULL },
-  { "italic", window_italic, NULL, NULL, NULL },
-  { "underline", window_underline, NULL, NULL, NULL },
-  { "strikethrough", window_strikethrough, NULL, NULL, NULL },
-  { "font", window_font, NULL, NULL, NULL },
-  { "color", window_color, NULL, NULL, NULL },
-  { "toggleFullscreen", activate_toggle, NULL, "false", change_fullscreen_state }
+  { "insertImage", insertImage_cb, NULL, NULL, NULL },
+  { "bold", bold_cb, NULL, NULL, NULL },
+  { "underline", underline_cb, NULL, NULL, NULL },
+  { "font", font_cb, NULL, NULL, NULL },
+  { "color", color_cb, NULL, NULL, NULL }
 };
 
-static GActionEntry app_entries[] = {
-  { "about", about_cb, NULL, NULL, NULL }
-};
-
-/*
- static void
- open_url (const char *uri)
- {
-   gtk_show_uri (gdk_screen_get_default (),
-                 uri,
-                 gtk_get_current_event_time (),
-                 NULL);
- }
-
-gboolean
-on_navigation_request (WebKitWebView             *web_view,
-                       WebKitWebFrame            *frame,
-                       WebKitNetworkRequest      *request,
-                       WebKitWebNavigationAction *navigation_action,
-                       WebKitWebPolicyDecision   *policy_decision,
-                       gpointer                   user_data)
-{ // FIXME: Port
-  webkit_web_policy_decision_ignore (policy_decision);
-  open_url (webkit_network_request_get_uri (request));
-  return TRUE;
-}
-*/
 static void
 new_window (GApplication *app,
             GFile *file)
 {
-  GtkWidget *window, *box, *toolbar, *scroll, *view;
-
-  GtkToolItem *button;
-  GtkStyleContext *style_context;
+  GtkWidget *window, *box, *view;
 
   GSimpleAction *about_action;
   GSimpleAction *fullscreen_action;
@@ -277,136 +85,25 @@ new_window (GApplication *app,
 
   window = gtk_application_window_new (G_APPLICATION (app));
   gtk_window_set_default_size (GTK_WINDOW (window), 640, 480);
-  gtk_window_set_position (window, GTK_WIN_POS_CENTER);
-  gtk_window_set_title (GTK_WINDOW (window), "Faker");
+  gtk_window_set_title (GTK_WINDOW (window), "Webkit2Gtk+ Demo");
   g_signal_connect_swapped (window, "delete-event",
                             G_CALLBACK (g_application_quit), app);
 
   g_action_map_add_action_entries (G_ACTION_MAP (window), win_entries,
                                    G_N_ELEMENTS (win_entries), window);
 
-  // Menu bar
-  /* 新建action */
-  copy_action = g_simple_action_new ("copy", NULL);
-  /* 绑定callback函数 */
-  g_signal_connect (copy_action, "activate", G_CALLBACK (copy_callback),
-                    GTK_WINDOW (window));
-  /* 添加到window */
-  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (copy_action));
-  // paste Action
-  paste_action = g_simple_action_new ("paste", NULL);
-  g_signal_connect (paste_action, "activate", G_CALLBACK (paste_callback),
-                    GTK_WINDOW (window));
-  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (paste_action));
-
-  // 创建一个简单的 Action
-  about_action = g_simple_action_new ("about", NULL);
-  fullscreen_action = g_simple_action_new ("fullscreen", NULL);
-  /* Connect the "activate" signal to the appropriate callback function. 
-  * It will indicate that the action was just activated.
-  */
-  g_signal_connect (about_action, "activate", G_CALLBACK (about_cb), 
-                    GTK_WINDOW (window));
-  g_signal_connect (fullscreen_action, "activate", G_CALLBACK (fullscreen_cb),
-                    GTK_WINDOW (window));
-  /* Adds the about_action to the overall action map. An Action map is an 
-   * interface that contains a number of named GAction instances 
-   * (such as about_action) 
-   */
-  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (about_action));
-  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (fullscreen_action));
-
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_container_set_border_width (GTK_CONTAINER (box), 6);
   gtk_container_add (GTK_CONTAINER (window), box);
 
-  // TODO: Remove toolbar
-  // Create a toolbar
-  toolbar = gtk_toolbar_new ();
-  /* Set the toolbar to be the primary toolbar of the application */
-  style_context = gtk_widget_get_style_context (toolbar);
-  gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
-
-  // FIXME: replace gtk_tool_button_new_from_stock ()
-  button = gtk_tool_button_new (NULL, "New");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (button), "document-new");
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "app.new");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 0);
-
-  button = gtk_tool_button_new (NULL, "Open");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (button), "document-open");
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "app.new");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 1);
-
-  button = gtk_tool_button_new (NULL, "Save");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (button), "document-save");
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "app.save");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 2);
-
-  button = gtk_tool_button_new (NULL, "Undo");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (button), "edit-undo");
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "win.undo");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 3);
-
-  button = gtk_tool_button_new (NULL, "Redo");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (button), "edit-redo");
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "win.redo");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 4);
-
-  // FIXME: stock 已经废弃了，要设置button的图标，如何正确使用icon还不清楚
-  button = gtk_tool_button_new_from_stock (GTK_STOCK_CUT);
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "win.cut");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 5);
-
-  button = gtk_tool_button_new_from_stock (GTK_STOCK_COPY);
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "win.copy");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 6);
-
-  button = gtk_tool_button_new_from_stock (GTK_STOCK_PASTE);
-  gtk_tool_item_set_is_important (button, TRUE);   /* 显示标签 */
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "win.paste");
-  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), button, 7);
-
-  gtk_box_pack_start (GTK_BOX (box), toolbar, FALSE, FALSE, 0);
-
-  // FIXME: Port
+  // TODO: Set HTML editable
   view = webkit_web_view_new ();
+  g_object_set_data ((GObject*)window, "webkit-view", view);
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
-  g_object_set_data ((GObject*)window, "webkit-view", view);
-
-  if (file != NULL)
-    {
-      gchar *contents;
-      gsize length;
-
-      if (g_file_load_contents (file, NULL, &contents, &length, NULL, NULL))
-        {
-          html = g_strdup (contents);
-          g_free (contents);
-        }
-    }
-  else
-    {
-      html = "<html><body></body></html>";
-    }
-
-  webkit_web_view_load_html (view, html, NULL);
-  // Set html editable from html or webkit setting
-    // FIXME: Port
-  // webkit_web_view_set_editable (view, TRUE);
-  /* Do not be a browser */
-  /*
-  g_signal_connect (view, "navigation-policy-decision-requestd",
-                    G_CALLBACK (on_navigation_request), NULL);
-  */
+  webkit_web_view_load_html (view, 
+                             "<html><body>Hello, world!</body></html>",
+                             NULL);
   gtk_widget_show_all (window);
 }
 
@@ -416,26 +113,28 @@ activate (GApplication *application)
   new_window (application, NULL);
 }
 
-static void
-open (GApplication  *application,
-      GFile        **files,
-      gint           n_files,
-      const gchar   *hint)
-{
-  gint i;
-
-  for (i = 0; i < n_files; i++)
-    new_window (application, files[i]);
-}
-
 typedef GtkApplication WebKitEditor;
 typedef GtkApplicationClass WebKitEditorClass;
 
 G_DEFINE_TYPE (WebKitEditor, webkit_editor, GTK_TYPE_APPLICATION)
 
-/* Callback function for the response signal "activate" from the "quit" action 
- * found in the function directly below.
- */ 
+static void
+new_cb (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+  g_print ("new_cb\n");
+}
+
+
+static void
+about_cb (GSimpleAction *about_action, 
+          GVariant *parameter,
+          gpointer userdata)
+{
+  g_print ("about_cb\n");
+}
+
 static void
 quit_cb (GSimpleAction *simple,
          GVariant      *parameter,
@@ -446,50 +145,24 @@ quit_cb (GSimpleAction *simple,
   g_application_quit (application);
 }
 
-static void
-perferences_cb (GSimpleAction *simple,
-                GVariant *parameter,
-                gpointer userdata)
-{
-  GApplication *app = userdata;
+static GActionEntry app_entries[] = {
+  { "new", new_cb, NULL, NULL, NULL },
+  { "about", about_cb, NULL, NULL, NULL },
+  { "quit", quit_cb, NULL, NULL, NULL },
+};
 
-  g_print ("perferences_cb");
-}
-
-/* Callback function for the "new" action */
-static void
-new_cb (GSimpleAction *simple,
-         GVariant      *parameter,
-         gpointer       user_data)
-{
-  g_print ("You clicked \"New\"\n");
-}
-
-/* Startup function for the menu we are creating in this sample */
 static void
 startup (GApplication *app,
          gpointer      user_data)
 {
-  GSimpleAction *new_action, *quit_action, *perferences_action;
   GtkBuilder *builder;
   GError *error = NULL;
 
   G_APPLICATION_CLASS (webkit_editor_parent_class)->startup (app);
-  
-  // FIXME: 或许应该使用 GActionGroup
-  perferences_action = g_simple_action_new ("perferences", NULL);
-  quit_action = g_simple_action_new ("quit", NULL);
-  new_action = g_simple_action_new ("new", NULL);
 
-  g_signal_connect (perferences_action, "activate", G_CALLBACK (perferences_cb), app);
-  g_signal_connect (quit_action, "activate", G_CALLBACK (quit_cb), app);
-  g_signal_connect (new_action, "activate", G_CALLBACK (new_cb), app);
+  g_action_map_add_action_entries (G_ACTION_MAP (app), app_entries,
+                                   G_N_ELEMENTS (app_entries), app);
 
-  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (perferences_action));
-  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
-  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (new_action));
-
-  /* A builder to add the User Interface designed with GLADE to the grid: */
   builder = gtk_builder_new ();
   gtk_builder_add_from_file (builder, "menubar.ui", &error);
   if (error != NULL) {
@@ -520,7 +193,6 @@ webkit_editor_class_init (WebKitEditorClass *class)
 
   application_class->startup = startup;
   application_class->activate = activate;
-  application_class->open = open;
 }
 
 WebKitEditor *
@@ -528,11 +200,10 @@ webkit_editor_new (void)
 {
   return g_object_new (webkit_editor_get_type (),
                        "application-id", "org.gtk.Test.faker",
-                       "flags", G_APPLICATION_HANDLES_OPEN,
+                       "flags", G_APPLICATION_FLAGS_NONE,
                        NULL);
 }
 
-// FIXME: split to 3 files, app.h, app.c and main.c
 int
 main (int argc, char **argv)
 {
