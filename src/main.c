@@ -59,7 +59,7 @@ color_cb (GSimpleAction *action,
              gpointer       user_data)
 {
   // TODO: Port to Webkit2
-  g_print ("olor_cb\n");
+  g_print ("color_cb\n");
 }
 
 static GActionEntry win_entries[] = {
@@ -75,11 +75,6 @@ new_window (GApplication *app,
             GFile *file)
 {
   GtkWidget *window, *box, *view;
-
-  GSimpleAction *about_action;
-  GSimpleAction *fullscreen_action;
-  GSimpleAction *copy_action;
-  GSimpleAction *paste_action;
 
   gchar *html = NULL;
 
@@ -102,7 +97,7 @@ new_window (GApplication *app,
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
   webkit_web_view_load_html (view, 
-                             "<html><body>Hello, world!</body></html>",
+                             "<html><body contentEditable='true'>Hello, world!</body></html>",
                              NULL);
   gtk_widget_show_all (window);
 }
