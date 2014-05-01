@@ -23,7 +23,7 @@ bold_cb (GSimpleAction *action,
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_run_javascript (view, 
-                                  "document.execCommand(\"bold\", false, false)",
+                                  "document.execCommand('bold', false, null)",
                                   NULL,
                                   NULL,
                                   NULL);
@@ -37,7 +37,7 @@ underline_cb (GSimpleAction *action,
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_run_javascript (view,
-                                  "document.execCommand(\"underline\", false, false)"
+                                  "document.execCommand('underline', false, false)",
                                   NULL,
                                   NULL,
                                   NULL);
@@ -75,8 +75,8 @@ new_window (GApplication *app,
             GFile *file)
 {
   GtkWidget *window, *box, *view;
+  WebKitWebViewGroup *view_group;  
   WebKitSettings *settings;
-  gchar *html = NULL;
 
   window = gtk_application_window_new (G_APPLICATION (app));
   gtk_window_set_default_size (GTK_WINDOW (window), 640, 480);
@@ -91,9 +91,12 @@ new_window (GApplication *app,
   gtk_container_set_border_width (GTK_CONTAINER (box), 6);
   gtk_container_add (GTK_CONTAINER (window), box);
 
-  // TODO: Set HTML editable
-  view = webkit_web_view_new ();
-  // 如何把 view 和 settings 绑定，考虑下 webkit view group
+  view_group = webkit_web_view_group_new ("main");
+  view = webkit_web_view_new_with_group (view_group);
+
+  // TODO: webkit_web_view_set_editable() in WebKit2 API?
+  settings = webkit_web_view_group_get_settings (view_group);
+
   g_object_set_data ((GObject*)window, "webkit-view", view);
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
