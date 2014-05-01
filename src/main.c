@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -113,8 +113,8 @@ window_insertImage (GSimpleAction *action,
     filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
     command = g_strdup_printf ("document.execCommand('insertImage', null, '%s');",
                                filename);
-    // FIXME: execute js here, not work
-    webkit_web_view_execute_script (view, command);
+    // FIXME: execute js here, not work && Port
+    // webkit_web_view_execute_script (view, command);
     g_free (filename);
     g_free (command);
   }
@@ -127,9 +127,13 @@ window_bold (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
+  g_print ("bold\n");
+  /*
   GtkWindow *window = user_data;
+  // FIXME: Port, the same blow
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  webkit_web_view_execute_script (view, "document.execCommand(\"bold\", false, false)");
+  webkit_web_view_execute_script (view,"document.execCommand(\"bold\", false, false)");
+  */
 }
 
 static void
@@ -137,9 +141,12 @@ window_italic (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
+    g_print ("italic\n");
+  /*
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_execute_script (view, "document.execCommand(\"italic\", false, false)");
+  */
 }
 
 static void
@@ -147,9 +154,12 @@ window_underline (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
+     g_print ("italic\n");
+  /*
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_execute_script (view, "document.execCommand(\"underline\", false, false)");
+  */
 }
 
 static void
@@ -157,9 +167,12 @@ window_strikethrough (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
+  g_print ("strikethrough\n");
+  /*
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_execute_script (view, "document.execCommand(\"strikethrough\", false, false)");
+  */
 }
 
 static void
@@ -223,6 +236,7 @@ static GActionEntry app_entries[] = {
   { "about", about_cb, NULL, NULL, NULL }
 };
 
+/*
  static void
  open_url (const char *uri)
  {
@@ -239,12 +253,12 @@ on_navigation_request (WebKitWebView             *web_view,
                        WebKitWebNavigationAction *navigation_action,
                        WebKitWebPolicyDecision   *policy_decision,
                        gpointer                   user_data)
-{
+{ // FIXME: Port
   webkit_web_policy_decision_ignore (policy_decision);
   open_url (webkit_network_request_get_uri (request));
   return TRUE;
 }
-
+*/
 static void
 new_window (GApplication *app,
             GFile *file)
@@ -306,6 +320,7 @@ new_window (GApplication *app,
   gtk_container_set_border_width (GTK_CONTAINER (box), 6);
   gtk_container_add (GTK_CONTAINER (window), box);
 
+  // TODO: Remove toolbar
   // Create a toolbar
   toolbar = gtk_toolbar_new ();
   /* Set the toolbar to be the primary toolbar of the application */
@@ -361,12 +376,9 @@ new_window (GApplication *app,
 
   gtk_box_pack_start (GTK_BOX (box), toolbar, FALSE, FALSE, 0);
 
-  scroll = gtk_scrolled_window_new (NULL, NULL);
-  g_object_set (scroll, "shadow-type", GTK_SHADOW_IN, NULL);
-  gtk_box_pack_start (GTK_BOX (box), scroll, TRUE, TRUE, 0);
-
+  // FIXME: Port
   view = webkit_web_view_new ();
-  gtk_container_add (GTK_CONTAINER (scroll), view);
+  gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
   g_object_set_data ((GObject*)window, "webkit-view", view);
 
@@ -386,16 +398,15 @@ new_window (GApplication *app,
       html = "<html><body></body></html>";
     }
 
-  webkit_web_view_load_string (WEBKIT_WEB_VIEW (view),
-                               html,
-                               "text/html",
-                               "UTF-8",
-                               NULL);
+  webkit_web_view_load_html (view, html, NULL);
   // Set html editable from html or webkit setting
-  webkit_web_view_set_editable (view, TRUE);
+    // FIXME: Port
+  // webkit_web_view_set_editable (view, TRUE);
   /* Do not be a browser */
+  /*
   g_signal_connect (view, "navigation-policy-decision-requestd",
                     G_CALLBACK (on_navigation_request), NULL);
+  */
   gtk_widget_show_all (window);
 }
 
