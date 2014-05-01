@@ -11,8 +11,14 @@ insertImage_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  // TODO: Port to Webkit2
-  g_print ("insertImage_cb\n");
+  GtkWindow *window = user_data;
+  WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
+  
+  webkit_web_view_run_javascript (view, 
+                                  "document.execCommand('insertImage', false, 'http://upload.wikimedia.org/wikipedia/en/5/5a/Webkit_Logo.png')",
+                                  NULL,
+                                  NULL,
+                                  NULL);
 }
 
 static void
