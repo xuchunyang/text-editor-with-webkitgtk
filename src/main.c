@@ -20,13 +20,13 @@ bold_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-  g_print ("bold_cb\n");
-  /*
   GtkWindow *window = user_data;
-  // TODO: Port to Webkit2
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  webkit_web_view_execute_script (view,"document.execCommand(\"bold\", false, false)");
-  */
+  webkit_web_view_run_javascript (view, 
+                                  "document.execCommand(\"bold\", false, false)",
+                                  NULL,
+                                  NULL,
+                                  NULL);
 }
 
 static void
@@ -34,13 +34,13 @@ underline_cb (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-     g_print ("underline_cb\n");
-  /*
-  // TODO: Port to Webkit2
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  webkit_web_view_execute_script (view, "document.execCommand(\"underline\", false, false)");
-  */
+  webkit_web_view_run_javascript (view,
+                                  "document.execCommand(\"underline\", false, false)"
+                                  NULL,
+                                  NULL,
+                                  NULL);
 }
 
 
@@ -75,7 +75,7 @@ new_window (GApplication *app,
             GFile *file)
 {
   GtkWidget *window, *box, *view;
-
+  WebKitSettings *settings;
   gchar *html = NULL;
 
   window = gtk_application_window_new (G_APPLICATION (app));
@@ -93,6 +93,7 @@ new_window (GApplication *app,
 
   // TODO: Set HTML editable
   view = webkit_web_view_new ();
+  // 如何把 view 和 settings 绑定，考虑下 webkit view group
   g_object_set_data ((GObject*)window, "webkit-view", view);
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
