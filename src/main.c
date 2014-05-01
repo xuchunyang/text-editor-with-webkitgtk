@@ -223,6 +223,28 @@ static GActionEntry app_entries[] = {
   { "about", about_cb, NULL, NULL, NULL }
 };
 
+ static void
+ open_url (const char *uri)
+ {
+   gtk_show_uri (gdk_screen_get_default (),
+                 uri,
+                 gtk_get_current_event_time (),
+                 NULL);
+ }
+
+gboolean
+on_navigation_request (WebKitWebView             *web_view,
+                       WebKitWebFrame            *frame,
+                       WebKitNetworkRequest      *request,
+                       WebKitWebNavigationAction *navigation_action,
+                       WebKitWebPolicyDecision   *policy_decision,
+                       gpointer                   user_data)
+{
+  webkit_web_policy_decision_ignore (policy_decision);
+  open_url (webkit_network_request_get_uri (request));
+  return TRUE;
+}
+
 static void
 new_window (GApplication *app,
             GFile *file)
@@ -371,6 +393,9 @@ new_window (GApplication *app,
                                NULL);
   // Set html editable from html or webkit setting
   webkit_web_view_set_editable (view, TRUE);
+  /* Do not be a browser */
+  g_signal_connect (view, "navigation-policy-decision-requestd",
+                    G_CALLBACK (on_navigation_request), NULL);
   gtk_widget_show_all (window);
 }
 
