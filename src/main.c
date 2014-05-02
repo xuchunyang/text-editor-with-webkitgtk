@@ -54,7 +54,7 @@ new_window (GApplication *app,
             GFile *file)
 {
   GtkWidget *window, *box, *view;
-  WebKitWebViewGroup *view_group;  
+  WebKitWebViewGroup *view_group;
   WebKitSettings *settings;
 
   window = gtk_application_window_new (G_APPLICATION (app));
@@ -70,18 +70,17 @@ new_window (GApplication *app,
   gtk_container_set_border_width (GTK_CONTAINER (box), 6);
   gtk_container_add (GTK_CONTAINER (window), box);
 
-  view_group = webkit_web_view_group_new ("main");
-  view = webkit_web_view_new_with_group (view_group);
-
+  view = webkit_web_view_new ();
+  settings = webkit_settings_new();
+  webkit_web_view_set_settings (view, settings);
   // TODO: webkit_web_view_set_editable() in WebKit2 API
   // We can use js to do this, i.e. document.body.contentEditable='true'; and document.designMode='on';
   // TODO: don't be a browser
-  settings = webkit_web_view_group_get_settings (view_group);
 
   g_object_set_data ((GObject*)window, "webkit-view", view);
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
-  webkit_web_view_load_html (view, 
+  webkit_web_view_load_html (view,
                              "<html><body contentEditable='true'>Hello, world!</body></html>",
                              NULL);
   gtk_widget_show_all (window);
