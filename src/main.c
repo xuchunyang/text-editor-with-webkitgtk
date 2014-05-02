@@ -1,11 +1,6 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
-#include <glib.h>
-#include <glib/gstdio.h>
-
-#include <glib/gi18n.h>
-
 static void
 insertImage_cb (GSimpleAction *action,
              GVariant      *parameter,
@@ -13,7 +8,8 @@ insertImage_cb (GSimpleAction *action,
 {
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  
+
+  // FIXME: insert local image
   webkit_web_view_run_javascript (view, 
                                   "document.execCommand('insertImage', false, 'http://upload.wikimedia.org/wikipedia/en/5/5a/Webkit_Logo.png')",
                                   NULL,
@@ -45,32 +41,12 @@ active_cb (GSimpleAction *action,
   g_free (script);
 }
 
-static void
-font_cb (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  // TODO: Port to Webkit2
-  g_print ("font_cb\n");
-}
-
-static void
-color_cb (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  // TODO: Port to Webkit2
-  g_print ("color_cb\n");
-}
-
 static GActionEntry win_entries[] = {
   { "insertImage", insertImage_cb, NULL, NULL, NULL },
   { "bold", active_cb, NULL, NULL, NULL },
   { "italic", active_cb, NULL, NULL, NULL },
   { "underline", active_cb, NULL, NULL, NULL },
   { "strikethrough", active_cb, NULL, NULL, NULL },
-  { "font", font_cb, NULL, NULL, NULL },
-  { "color", color_cb, NULL, NULL, NULL }
 };
 
 static void
@@ -99,6 +75,7 @@ new_window (GApplication *app,
 
   // TODO: webkit_web_view_set_editable() in WebKit2 API
   // We can use js to do this, i.e. document.body.contentEditable='true'; and document.designMode='on';
+  // TODO: don't be a browser
   settings = webkit_web_view_group_get_settings (view_group);
 
   g_object_set_data ((GObject*)window, "webkit-view", view);

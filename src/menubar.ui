@@ -40,17 +40,6 @@
             <attribute name="action">win.strikethrough</attribute>
           </item>
         </section>
-        <section>
-          <item>
-            <attribute name="label">Font</attribute>
-            <attribute name="action">win.font</attribute>
-          </item>
-          <item>
-            <attribute name="label">Color</attribute>
-            <attribute name="action">win.color</attribute>
-          </item>
-        </section>
-
       </submenu>
     </menu>
 
