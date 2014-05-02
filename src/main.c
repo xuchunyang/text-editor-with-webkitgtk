@@ -22,33 +22,28 @@ insertImage_cb (GSimpleAction *action,
 }
 
 static void
-bold_cb (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
+active_cb (GSimpleAction *action,
+           GVariant      *parameter,
+           gpointer       user_data)
 {
+  gchar *script;
+  GValue value = G_VALUE_INIT;
+
+  g_value_init (&value, G_TYPE_STRING);
+  g_object_get_property (G_OBJECT (action), "name", &value);
+  script = g_strdup_printf ("document.execCommand('%s', false, null)", 
+                            g_value_get_string (&value));
+  
   GtkWindow *window = user_data;
   WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
   webkit_web_view_run_javascript (view, 
-                                  "document.execCommand('bold', false, null)",
+                                  script,
                                   NULL,
                                   NULL,
                                   NULL);
+  g_value_unset (&value);
+  g_free (script);
 }
-
-static void
-underline_cb (GSimpleAction *action,
-             GVariant      *parameter,
-             gpointer       user_data)
-{
-  GtkWindow *window = user_data;
-  WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
-  webkit_web_view_run_javascript (view,
-                                  "document.execCommand('underline', false, false)",
-                                  NULL,
-                                  NULL,
-                                  NULL);
-}
-
 
 static void
 font_cb (GSimpleAction *action,
@@ -70,8 +65,10 @@ color_cb (GSimpleAction *action,
 
 static GActionEntry win_entries[] = {
   { "insertImage", insertImage_cb, NULL, NULL, NULL },
-  { "bold", bold_cb, NULL, NULL, NULL },
-  { "underline", underline_cb, NULL, NULL, NULL },
+  { "bold", active_cb, NULL, NULL, NULL },
+  { "italic", active_cb, NULL, NULL, NULL },
+  { "underline", active_cb, NULL, NULL, NULL },
+  { "strikethrough", active_cb, NULL, NULL, NULL },
   { "font", font_cb, NULL, NULL, NULL },
   { "color", color_cb, NULL, NULL, NULL }
 };
@@ -100,7 +97,8 @@ new_window (GApplication *app,
   view_group = webkit_web_view_group_new ("main");
   view = webkit_web_view_new_with_group (view_group);
 
-  // TODO: webkit_web_view_set_editable() in WebKit2 API?
+  // TODO: webkit_web_view_set_editable() in WebKit2 API
+  // We can use js to do this, i.e. document.body.contentEditable='true'; and document.designMode='on';
   settings = webkit_web_view_group_get_settings (view_group);
 
   g_object_set_data ((GObject*)window, "webkit-view", view);
