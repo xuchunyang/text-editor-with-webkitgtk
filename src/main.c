@@ -1,6 +1,33 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
+#include <glib/gi18n.h>
+
+static void
+open_cb (GSimpleAction *action,
+          GVariant      *parameter,
+          gpointer       user_data)
+{
+  GtkWindow *toplevel = user_data;
+  WebKitWebView *view = g_object_get_data ((GObject*)toplevel, "webkit-view");
+  GtkWidget *dialog = gtk_file_chooser_dialog_new (_("Open html"),
+	                                               GTK_WINDOW (toplevel),
+	                                               GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                               GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+	                                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                               NULL);
+  if (gtk_dialog_run(GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    gchar *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+    gchar *content;
+    g_file_get_contents (filename, &content, NULL, NULL);
+    webkit_web_view_load_html (view,
+                               content,
+                               NULL);
+  }
+  gtk_widget_destroy (dialog);
+}
+
 static void
 insertImage_cb (GSimpleAction *action,
              GVariant      *parameter,
@@ -41,12 +68,33 @@ active_cb (GSimpleAction *action,
   g_free (script);
 }
 
+static void
+color_cb (GSimpleAction *action,
+          GVariant      *parameter,
+          gpointer       user_data)
+{
+  g_print ("TODO: color_cb\n");
+  GtkWindow *window = user_data;
+  WebKitWebView *view = g_object_get_data ((GObject*)window, "webkit-view");
+  gchar *script;
+
+  script = "document.body.contentDocument.designMode = 'on'";
+  // script = "document.body.style.color = \"red\"";
+  webkit_web_view_run_javascript (view, 
+                                  script,
+                                  NULL,
+                                  NULL,
+                                  NULL);
+  g_free (script);
+}
 static GActionEntry win_entries[] = {
+  { "open", open_cb, NULL, NULL, NULL },
   { "insertImage", insertImage_cb, NULL, NULL, NULL },
   { "bold", active_cb, NULL, NULL, NULL },
   { "italic", active_cb, NULL, NULL, NULL },
   { "underline", active_cb, NULL, NULL, NULL },
   { "strikethrough", active_cb, NULL, NULL, NULL },
+  { "color", color_cb, NULL, NULL, NULL, NULL }
 };
 
 static void
@@ -81,7 +129,8 @@ new_window (GApplication *app,
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 0);
 
   webkit_web_view_load_html (view,
-                             "<html><body contentEditable='true'>Hello, world!</body></html>",
+                             "<html><head><style>body {color:blue}</style></head>"
+                             "<body contentEditable='true'>Hello, world!</body></html>",
                              NULL);
   gtk_widget_show_all (window);
 }
